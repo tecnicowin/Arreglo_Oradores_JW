@@ -38,6 +38,11 @@ const app = {
         localStorage.setItem('salientes', JSON.stringify(this.db.salientes));
         localStorage.setItem('arreglos', JSON.stringify(this.db.arreglos));
         localStorage.setItem('config', JSON.stringify(this.db.config));
+
+        // Auto-push to cloud if configured
+        if (this.db.config.ghToken && this.db.config.ghUser) {
+            this.cloudPush(true); // Silent mode
+        }
     },
 
     navigate(screenId) {
@@ -1106,10 +1111,10 @@ const app = {
     },
 
     // --- GitHub Cloud Sync Logic ---
-    async githubRequest(method, path, body = null) {
+    async githubRequest(method, path, body = null, silent = false) {
         const { ghUser, ghRepo, ghToken } = this.db.config;
         if (!ghUser || !ghRepo || !ghToken) {
-            alert("Configura primero tu Usuario, Repositorio y Token en esta pantalla.");
+            if (!silent) alert("Configura primero tu Usuario, Repositorio y Token en esta pantalla.");
             return null;
         }
 
@@ -1131,39 +1136,47 @@ const app = {
             }
             return response.status === 404 ? null : await response.json();
         } catch (e) {
-            alert("Error de conexión: " + e.message);
+            if (!silent) alert("Error de conexión: " + e.message);
             return null;
         }
     },
 
-    async cloudPush() {
+    async cloudPush(silent = false) {
         const btn = document.getElementById('btn-cloud-push');
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<i data-lucide="loader-2" class="spin"></i> Subiendo...';
-        lucide.createIcons();
+        const originalText = btn ? btn.innerHTML : '';
+        if (!silent && btn) {
+            btn.innerHTML = '<i data-lucide="loader-2" class="spin"></i> Subiendo...';
+            lucide.createIcons();
+        }
 
         // 1. Get current file (to get SHA if exists)
-        const fileData = await this.githubRequest('GET', 'database.json');
+        const fileData = await this.githubRequest('GET', 'database.json', null, silent);
+        if (!fileData && !silent && this.db.config.ghToken) {
+             // If error and not intentional 404
+        }
         const sha = fileData ? fileData.sha : null;
 
         // 2. Prepare content
         const content = btoa(unescape(encodeURIComponent(JSON.stringify(this.db, null, 2))));
         
         const body = {
-            message: `Update database ${new Date().toLocaleString()}`,
+            message: `Auto-update database ${new Date().toLocaleString()}`,
             content: content
         };
         if (sha) body.sha = sha;
 
         // 3. Upload
-        const result = await this.githubRequest('PUT', 'database.json', body);
+        const result = await this.githubRequest('PUT', 'database.json', body, silent);
         
         if (result) {
-            this.updateSyncStatus(true, "Sincronizado (Subida)");
-            alert("✅ Base de datos subida con éxito a GitHub.");
+            this.updateSyncStatus(true, "Sincronizado (Auto)");
+            if (!silent) alert("✅ Base de datos subida con éxito a GitHub.");
         }
-        btn.innerHTML = originalText;
-        lucide.createIcons();
+        
+        if (!silent && btn) {
+            btn.innerHTML = originalText;
+            lucide.createIcons();
+        }
     },
 
     async cloudPull() {
