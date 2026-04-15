@@ -257,16 +257,14 @@
                         <input type="number" id="ora-cong-nro" placeholder="Nro de su cong.">
                     </div>
                     <div class="input-group">
-                        <label>Temas / Bosquejos (Seleccionar)</label>
+                        <label>Temas / Bosquejos (Seleccionar o escribir)</label>
                         <div style="display: flex; gap: 8px; margin-bottom: 10px;">
-                            <select id="ora-bosq-select" style="flex: 1;">
-                                <option value="">Seleccionar tema...</option>
-                                <!-- Injected -->
-                            </select>
+                            <input type="text" id="ora-bosq-input" placeholder="Escribe nro o busca..." list="data-bosquejos-all" style="flex: 1;">
                             <button type="button" class="btn-primary" style="padding: 10px; border-radius: 8px;" id="btn-add-ora-bosq">
                                 <i data-lucide="plus"></i>
                             </button>
                         </div>
+                        <datalist id="data-bosquejos-all"></datalist>
                         <div id="ora-bosq-selected-tags" style="display: flex; flex-wrap: wrap; gap: 5px;">
                             <!-- Selected Tags -->
                         </div>

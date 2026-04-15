@@ -304,6 +304,47 @@ const app = {
         }
     },
 
+    updateDataLists() {
+        // Populate Oradores for Arreglos
+        const arrOraDatalist = document.getElementById('data-oradores');
+        if (arrOraDatalist) {
+            arrOraDatalist.innerHTML = '';
+            ['visitantes', 'salientes'].forEach(t => {
+                Object.keys(this.db[t]).forEach(name => {
+                    arrOraDatalist.innerHTML += `<option value="${name}">`;
+                });
+            });
+        }
+
+        // Populate Congregaciones for Arreglos and others
+        const congArrDatalist = document.getElementById('data-congregaciones');
+        if (congArrDatalist) {
+            congArrDatalist.innerHTML = '';
+            Object.entries(this.db.congregaciones).forEach(([id, data]) => {
+                const name = typeof data === 'string' ? data : data.nombre;
+                congArrDatalist.innerHTML += `<option value="${id} - ${name}">`;
+            });
+        }
+
+        // Populate Outlines (Bosquejos) for Arreglos
+        const bosqDatalist = document.getElementById('data-bosquejos');
+        if (bosqDatalist) {
+            bosqDatalist.innerHTML = '';
+            Object.entries(this.db.bosquejos).forEach(([id, name]) => {
+                bosqDatalist.innerHTML += `<option value="${id} - ${name}">`;
+            });
+        }
+
+        // Populate NEW Outlines Datalist for Oradores Screen
+        const oraBosqDatalist = document.getElementById('data-bosquejos-all');
+        if (oraBosqDatalist) {
+            oraBosqDatalist.innerHTML = '';
+            Object.entries(this.db.bosquejos).forEach(([id, name]) => {
+                oraBosqDatalist.innerHTML += `<option value="${id} - ${name}">`;
+            });
+        }
+    },
+
     renderRecentActivity() {
         const recentEl = document.getElementById('recent-activity');
         if (!recentEl) return;
@@ -491,11 +532,16 @@ const app = {
         if (btnAddOraBosq) {
             btnAddOraBosq.addEventListener('click', (e) => {
                 e.preventDefault();
-                const bid = document.getElementById('ora-bosq-select').value;
-                if (!bid) return;
+                const raw = document.getElementById('ora-bosq-input').value;
+                if (!raw) return;
+                
+                // Extract just the ID if it's in "ID - Name" format
+                const bid = raw.includes(' - ') ? raw.split(' - ')[0].trim() : raw.trim();
+                
                 if (!this.tempOraBosqs.includes(bid)) {
                     this.tempOraBosqs.push(bid);
                     this.renderTempTags();
+                    document.getElementById('ora-bosq-input').value = '';
                 } else {
                     alert("Este tema ya está en la lista temporal.");
                 }
