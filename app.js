@@ -9,7 +9,10 @@ const app = {
         bosquejos: JSON.parse(localStorage.getItem('bosquejos')) || {},
         visitantes: JSON.parse(localStorage.getItem('visitantes')) || {},
         salientes: JSON.parse(localStorage.getItem('salientes')) || {},
-        arreglos: JSON.parse(localStorage.getItem('arreglos')) || []
+        arreglos: JSON.parse(localStorage.getItem('arreglos')) || [],
+        config: JSON.parse(localStorage.getItem('config')) || {
+            nombre: '', nro: '', direccion: '', horario: '', celular: '', responsable: '', email: ''
+        }
     },
     currentPin: '',
     correctPin: '1234', // Default PIN for demo
@@ -32,6 +35,7 @@ const app = {
         localStorage.setItem('visitantes', JSON.stringify(this.db.visitantes));
         localStorage.setItem('salientes', JSON.stringify(this.db.salientes));
         localStorage.setItem('arreglos', JSON.stringify(this.db.arreglos));
+        localStorage.setItem('config', JSON.stringify(this.db.config));
     },
 
     navigate(screenId) {
@@ -49,6 +53,20 @@ const app = {
 
         // Refresh icons just in case
         lucide.createIcons();
+
+        // Specific screen init
+        if (screenId === 'settings') this.loadConfigToUI();
+    },
+
+    loadConfigToUI() {
+        if (!this.db.config) return;
+        document.getElementById('cfg-cong-nombre').value = this.db.config.nombre || '';
+        document.getElementById('cfg-cong-nro').value = this.db.config.nro || '';
+        document.getElementById('cfg-direccion').value = this.db.config.direccion || '';
+        document.getElementById('cfg-horario').value = this.db.config.horario || '';
+        document.getElementById('cfg-celular').value = this.db.config.celular || '';
+        document.getElementById('cfg-responsable').value = this.db.config.responsable || '';
+        document.getElementById('cfg-email').value = this.db.config.email || '';
     },
 
     // --- UI Rendering ---
@@ -412,6 +430,23 @@ const app = {
             });
         }
 
+        const btnSaveConfig = document.getElementById('btn-save-config');
+        if (btnSaveConfig) {
+            btnSaveConfig.addEventListener('click', () => {
+                this.db.config = {
+                    nombre: document.getElementById('cfg-cong-nombre').value,
+                    nro: document.getElementById('cfg-cong-nro').value,
+                    direccion: document.getElementById('cfg-direccion').value,
+                    horario: document.getElementById('cfg-horario').value,
+                    celular: document.getElementById('cfg-celular').value,
+                    responsable: document.getElementById('cfg-responsable').value,
+                    email: document.getElementById('cfg-email').value
+                };
+                this.save();
+                alert("Configuración inicial guardada correctamente.");
+            });
+        }
+
         const btnExportPdf = document.getElementById('btn-export-pdf');
         if (btnExportPdf) {
             btnExportPdf.addEventListener('click', () => this.exportToPDF());
@@ -538,10 +573,10 @@ const app = {
 
         let currentY = 30;
 
-        // SECCIÓN SALIENTES
+        // SECCIÓN ANFITRIONA (SALIENTES)
         doc.setFontSize(12);
         doc.setTextColor(0);
-        doc.text("ORADORES SALIENTES (A otras congregaciones)", 14, currentY);
+        doc.text(`CONGREGACIÓN ANFITRIONA: ${this.db.config.nombre || ''} (#${this.db.config.nro || ''})`, 14, currentY);
         
         doc.autoTable({
             startY: currentY + 5,
@@ -552,9 +587,19 @@ const app = {
             styles: { fontSize: 9 }
         });
 
-        currentY = doc.lastAutoTable.finalY + 15;
+        currentY = doc.lastAutoTable.finalY + 10;
+        
+        // Host Details Footer (requested)
+        doc.setFontSize(8);
+        doc.setTextColor(100);
+        doc.text(`Dirección: ${this.db.config.direccion || '---'} | Horario: ${this.db.config.horario || '---'}`, 14, currentY);
+        doc.text(`Responsable: ${this.db.config.responsable || '---'} | Contacto: ${this.db.config.celular || '---'} | Email: ${this.db.config.email || '---'}`, 14, currentY + 4);
+
+        currentY = currentY + 15;
 
         // SECCIÓN VISITANTES
+        doc.setFontSize(12);
+        doc.setTextColor(0);
         doc.text("ORADORES VISITANTES (Vienen a nuestra congregación)", 14, currentY);
         
         doc.autoTable({

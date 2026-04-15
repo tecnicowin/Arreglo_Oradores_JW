@@ -373,8 +373,43 @@
                 </div>
             </header>
             <div class="scrollable" style="padding: 20px;">
+                <div class="glass-card" style="margin-bottom: 20px;">
+                    <h4 style="margin-bottom: 15px;">Configuración Inicial</h4>
+                    <div class="input-group">
+                        <label>Congregación Anfitriona (Nombre)</label>
+                        <input type="text" id="cfg-cong-nombre" placeholder="Ej: San Bernardino">
+                    </div>
+                    <div class="input-group">
+                        <label>Nro. de Congregación</label>
+                        <input type="number" id="cfg-cong-nro" placeholder="Ej: 3780">
+                    </div>
+                    <div class="input-group">
+                        <label>Dirección</label>
+                        <input type="text" id="cfg-direccion" placeholder="Calle, Av, Edif...">
+                    </div>
+                    <div class="input-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div class="input-group">
+                            <label>Horario</label>
+                            <input type="text" id="cfg-horario" placeholder="Ej: 10:00 AM">
+                        </div>
+                        <div class="input-group">
+                            <label>Celular</label>
+                            <input type="text" id="cfg-celular" placeholder="+58...">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>Responsable de Arreglos</label>
+                        <input type="text" id="cfg-responsable" placeholder="Nombre del hermano">
+                    </div>
+                    <div class="input-group">
+                        <label>Correo JW Hub</label>
+                        <input type="email" id="cfg-email" placeholder="email@jwpub.org">
+                    </div>
+                    <button class="btn-primary" style="width: 100%; margin-top: 10px;" id="btn-save-config">Guardar Configuración</button>
+                </div>
+
                 <div class="glass-card">
-                    <h4 style="margin-bottom: 15px;">Preferencias</h4>
+                    <h4 style="margin-bottom: 15px;">Preferencias de App</h4>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                         <span>Modo Oscuro</span>
                         <div style="width: 40px; height: 20px; background: var(--primary); border-radius: 10px; position: relative;">
