@@ -11,7 +11,8 @@ const app = {
         salientes: JSON.parse(localStorage.getItem('salientes')) || {},
         arreglos: JSON.parse(localStorage.getItem('arreglos')) || [],
         config: JSON.parse(localStorage.getItem('config')) || {
-            nombre: '', nro: '', direccion: '', horario: '', celular: '', responsable: '', email: '', dias: ''
+            nombre: '', nro: '', direccion: '', horario: '', celular: '', responsable: '', email: '', dias: '',
+            ghUser: '', ghRepo: 'arregloorajw', ghToken: ''
         }
     },
     tempOraBosqs: [], // Temp storage for speaker registration
@@ -77,6 +78,14 @@ const app = {
         document.getElementById('cfg-celular').value = this.db.config.celular || '';
         document.getElementById('cfg-responsable').value = this.db.config.responsable || '';
         document.getElementById('cfg-email').value = this.db.config.email || '';
+
+        // Also Cloud fields
+        const ghUser = document.getElementById('sync-user');
+        const ghRepo = document.getElementById('sync-repo');
+        const ghToken = document.getElementById('sync-token');
+        if (ghUser) ghUser.value = this.db.config.ghUser || '';
+        if (ghRepo) ghRepo.value = this.db.config.ghRepo || 'arregloorajw';
+        if (ghToken) ghToken.value = this.db.config.ghToken || '';
     },
 
     // --- UI Rendering ---
@@ -714,6 +723,26 @@ const app = {
             btnExportPdf.addEventListener('click', () => this.exportToPDF());
         }
 
+        // --- Cloud Sync Listeners ---
+        const btnPush = document.getElementById('btn-cloud-push');
+        if (btnPush) btnPush.addEventListener('click', () => this.cloudPush());
+
+        const btnPull = document.getElementById('btn-cloud-pull');
+        if (btnPull) btnPull.addEventListener('click', () => this.cloudPull());
+
+        // Auto-save Cloud config on change
+        ['sync-user', 'sync-repo', 'sync-token'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('change', () => {
+                    this.db.config.ghUser = document.getElementById('sync-user').value;
+                    this.db.config.ghRepo = document.getElementById('sync-repo').value;
+                    this.db.config.ghToken = document.getElementById('sync-token').value;
+                    this.save();
+                });
+            }
+        });
+
         const btnShare = document.createElement('button');
         btnShare.className = 'btn-primary';
         btnShare.style = 'padding: 10px; background: #25d366; box-shadow: none; margin-left: 10px;';
@@ -1074,6 +1103,112 @@ const app = {
             });
             if (hint) hint.style.display = 'none';
         }
+    },
+
+    // --- GitHub Cloud Sync Logic ---
+    async githubRequest(method, path, body = null) {
+        const { ghUser, ghRepo, ghToken } = this.db.config;
+        if (!ghUser || !ghRepo || !ghToken) {
+            alert("Configura primero tu Usuario, Repositorio y Token en esta pantalla.");
+            return null;
+        }
+
+        const url = `https://api.github.com/repos/${ghUser}/${ghRepo}/contents/${path}`;
+        const headers = {
+            'Authorization': `token ${ghToken}`,
+            'Accept': 'application/vnd.github.v3+json',
+            'Content-Type': 'application/json'
+        };
+
+        const options = { method, headers };
+        if (body) options.body = JSON.stringify(body);
+
+        try {
+            const response = await fetch(url, options);
+            if (!response.ok && response.status !== 404) {
+                const err = await response.json();
+                throw new Error(err.message || 'Error en la petición');
+            }
+            return response.status === 404 ? null : await response.json();
+        } catch (e) {
+            alert("Error de conexión: " + e.message);
+            return null;
+        }
+    },
+
+    async cloudPush() {
+        const btn = document.getElementById('btn-cloud-push');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i data-lucide="loader-2" class="spin"></i> Subiendo...';
+        lucide.createIcons();
+
+        // 1. Get current file (to get SHA if exists)
+        const fileData = await this.githubRequest('GET', 'database.json');
+        const sha = fileData ? fileData.sha : null;
+
+        // 2. Prepare content
+        const content = btoa(unescape(encodeURIComponent(JSON.stringify(this.db, null, 2))));
+        
+        const body = {
+            message: `Update database ${new Date().toLocaleString()}`,
+            content: content
+        };
+        if (sha) body.sha = sha;
+
+        // 3. Upload
+        const result = await this.githubRequest('PUT', 'database.json', body);
+        
+        if (result) {
+            this.updateSyncStatus(true, "Sincronizado (Subida)");
+            alert("✅ Base de datos subida con éxito a GitHub.");
+        }
+        btn.innerHTML = originalText;
+        lucide.createIcons();
+    },
+
+    async cloudPull() {
+        if (!confirm("Esto reemplazará tus datos locales con los de la nube. ¿Continuar?")) return;
+
+        const btn = document.getElementById('btn-cloud-pull');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i data-lucide="loader-2" class="spin"></i> Bajando...';
+        lucide.createIcons();
+
+        const fileData = await this.githubRequest('GET', 'database.json');
+        
+        if (fileData && fileData.content) {
+            try {
+                const decoded = decodeURIComponent(escape(atob(fileData.content)));
+                const newDb = JSON.parse(decoded);
+                
+                // Validate minimally
+                if (newDb.arreglos && newDb.congregaciones) {
+                    this.db = newDb;
+                    this.save();
+                    this.updateSyncStatus(true, "Sincronizado (Bajada)");
+                    alert("✅ Datos descargados y actualizados. La app se reiniciará.");
+                    location.reload();
+                } else {
+                    alert("⚠️ El archivo en la nube no parece ser una base de datos válida.");
+                }
+            } catch (e) {
+                alert("Error al procesar los datos: " + e.message);
+            }
+        } else {
+            alert("❌ No se encontró el archivo database.json en tu repositorio.");
+        }
+        btn.innerHTML = originalText;
+        lucide.createIcons();
+    },
+
+    updateSyncStatus(success, text) {
+        const dot = document.getElementById('sync-status-dot');
+        const txt = document.getElementById('sync-status-text');
+        const last = document.getElementById('sync-last-update');
+        
+        if (dot) dot.style.background = success ? '#22c55e' : '#ef4444';
+        if (txt) txt.innerText = text;
+        if (last) last.innerText = "Última vez: " + new Date().toLocaleTimeString();
     }
 };
 
