@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Control de Oradores Pro</title>
+    <meta name="description" content="Gestión profesional de intercambio de oradores. Sincronización en la nube, móvil y escritorio.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- XLSX Library -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <!-- PDF Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+    <div id="app">
+        <!-- Security PIN Screen -->
+        <div id="screen-login" class="screen active">
+            <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px; text-align: center;">
+                <div style="width: 80px; height: 80px; background: var(--primary-glow); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; border: 1px solid var(--primary);">
+                    <i data-lucide="shield-check" style="width: 40px; height: 40px; color: var(--primary);"></i>
+                </div>
+                <h3 style="font-size: 1.5rem; margin-bottom: 10px;">Acceso Seguro</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 30px;">Ingresa tu PIN para continuar</p>
+                
+                <div id="pin-display" style="display: flex; gap: 15px; margin-bottom: 40px;">
+                    <span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span>
+                </div>
+
+                <div class="pin-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 100%; max-width: 280px;">
+                    <button class="pin-btn" onclick="app.pressPin('1')">1</button>
+                    <button class="pin-btn" onclick="app.pressPin('2')">2</button>
+                    <button class="pin-btn" onclick="app.pressPin('3')">3</button>
+                    <button class="pin-btn" onclick="app.pressPin('4')">4</button>
+                    <button class="pin-btn" onclick="app.pressPin('5')">5</button>
+                    <button class="pin-btn" onclick="app.pressPin('6')">6</button>
+                    <button class="pin-btn" onclick="app.pressPin('7')">7</button>
+                    <button class="pin-btn" onclick="app.pressPin('8')">8</button>
+                    <button class="pin-btn" onclick="app.pressPin('9')">9</button>
+                    <button class="pin-btn" style="background: transparent; border: none;"></button>
+                    <button class="pin-btn" onclick="app.pressPin('0')">0</button>
+                    <button class="pin-btn" onclick="app.clearPin()" style="color: var(--accent);"><i data-lucide="delete" style="width:20px;"></i></button>
+                </div>
+                
+                <p style="margin-top: 50px; font-size: 0.6rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px;">Control de Oradores Pro v1.0</p>
+            </div>
+        </div>
+
+        <!-- Dashboard Screen -->
+        <div id="screen-dashboard" class="screen">
+            <header>
+                <div class="title-area">
+                    <span style="font-size: 0.75rem; color: var(--primary); font-weight: 700; text-transform: uppercase;">Resumen Semanal</span>
+                    <h2>Panel de Control</h2>
+                </div>
+                <button class="btn-primary" style="padding: 8px; border-radius: 50%; width: 42px; height: 42px;" id="add-quick">
+                    <i data-lucide="plus"></i>
+                </button>
+            </header>
+
+            <div class="scrollable dashboard-grid">
+                <div class="glass-card status-card">
+                    <div class="status-icon">
+                        <i data-lucide="calendar"></i>
+                    </div>
+                    <div class="status-info">
+                        <h4>Próximo Arreglo</h4>
+                        <p>Domingo, 19 de Abril - Saliente</p>
+                    </div>
+                </div>
+
+                <div class="glass-card status-card" style="border-left: 4px solid var(--secondary);">
+                    <div class="status-icon" style="background: var(--secondary-glow); color: var(--secondary);">
+                        <i data-lucide="users"></i>
+                    </div>
+                    <div class="status-info">
+                        <h4>Oradores Activos</h4>
+                        <div id="stats-speakers" style="font-weight: 700; font-size: 1.2rem;">12</div>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 10px; font-size: 0.9rem; color: var(--text-muted); text-transform: uppercase;">Tareas Rápidas</h3>
+                
+                <div class="dashboard-actions" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <button class="glass-card nav-item" style="padding: 24px 10px;" onclick="app.navigate('congregaciones')">
+                        <i data-lucide="building-2" style="color: var(--primary);"></i>
+                        <span>Congregaciones</span>
+                    </button>
+                    <button class="glass-card nav-item" style="padding: 24px 10px;" onclick="app.navigate('bosquejos')">
+                        <i data-lucide="book-open" style="color: var(--secondary);"></i>
+                        <span>Bosquejos</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Congregaciones Screen -->
+        <div id="screen-congregaciones" class="screen">
+            <header>
+                <div class="title-area">
+                    <button onclick="app.navigate('dashboard')" style="background:none; border:none; color:white; margin-bottom: 5px; display: flex; align-items:center; gap:5px; font-size:0.8rem;">
+                        <i data-lucide="chevron-left" style="width:16px;"></i> Volver
+                    </button>
+                    <h2>Congregaciones</h2>
+                </div>
+            </header>
+            <div class="scrollable" style="padding: 0 20px;">
+                <div class="glass-card" style="margin-bottom: 20px;">
+                    <h4 style="margin-bottom: 15px;">Registrar Nueva</h4>
+                    <div class="input-group">
+                        <label>Nro. de Congregación</label>
+                        <input type="number" id="cong-nro" placeholder="Ej: 1024">
+                    </div>
+                    <div class="input-group">
+                        <label>Nombre</label>
+                        <input type="text" id="cong-nombre" placeholder="Nombre completo">
+                    </div>
+                    <button class="btn-primary" style="width: 100%;" id="btn-save-cong">Guardar Congregación</button>
+                </div>
+                
+                <h4 style="margin-bottom: 10px; color: var(--text-muted);">Listado</h4>
+                
+                <div class="glass-card" style="margin-bottom: 20px; border: 1px dashed var(--primary); background: var(--primary-glow);">
+                    <p style="font-size: 0.75rem; text-align: center; margin-bottom: 10px;">Importar desde Excel (Columnas: Nro, Nombre)</p>
+                    <input type="file" id="excel-cong" accept=".xlsx, .xls" style="display: none;">
+                    <button class="btn-primary" style="width: 100%; height: 35px; font-size: 0.8rem;" onclick="document.getElementById('excel-cong').click()">
+                        <i data-lucide="file-spreadsheet"></i> Cargar Excel
+                    </button>
+                </div>
+
+                <div id="list-congregaciones" style="display: flex; flex-direction: column; gap: 10px;">
+                    <!-- Items inject dynamically -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Bosquejos Screen -->
+        <div id="screen-bosquejos" class="screen">
+            <header>
+                <div class="title-area">
+                    <button onclick="app.navigate('dashboard')" style="background:none; border:none; color:white; margin-bottom: 5px; display: flex; align-items:center; gap:5px; font-size:0.8rem;">
+                        <i data-lucide="chevron-left" style="width:16px;"></i> Volver
+                    </button>
+                    <h2>Bosquejos</h2>
+                </div>
+            </header>
+            <div class="scrollable" style="padding: 0 20px;">
+                <div class="glass-card" style="margin-bottom: 20px;">
+                    <h4 style="margin-bottom: 15px;">Registrar Bosquejo</h4>
+                    <div class="input-group">
+                        <label>Nro. de Bosquejo</label>
+                        <input type="number" id="bosq-nro" placeholder="Ej: 1">
+                    </div>
+                    <div class="input-group">
+                        <label>Título del Tema</label>
+                        <input type="text" id="bosq-titulo" placeholder="Ej: ¿Conoce usted a Dios?">
+                    </div>
+                    <button class="btn-primary" style="width: 100%;" id="btn-save-bosq">Guardar Bosquejo</button>
+                </div>
+                
+                <h4 style="margin-bottom: 10px; color: var(--text-muted);">Listado Temas</h4>
+
+                <div class="glass-card" style="margin-bottom: 20px; border: 1px dashed var(--secondary); background: var(--secondary-glow);">
+                    <p style="font-size: 0.75rem; text-align: center; margin-bottom: 10px;">Importar desde Excel (Columnas: Nro, Titulo)</p>
+                    <input type="file" id="excel-bosq" accept=".xlsx, .xls" style="display: none;">
+                    <button class="btn-primary" style="width: 100%; height: 35px; font-size: 0.8rem; background: var(--secondary);" onclick="document.getElementById('excel-bosq').click()">
+                        <i data-lucide="file-spreadsheet"></i> Cargar Excel
+                    </button>
+                </div>
+
+                <div id="list-bosquejos" style="display: flex; flex-direction: column; gap: 10px;">
+                    <!-- Items inject dynamically -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Oradores Screen -->
+        <div id="screen-oradores" class="screen">
+            <header>
+                <div class="title-area">
+                    <button onclick="app.navigate('dashboard')" style="background:none; border:none; color:white; margin-bottom: 5px; display: flex; align-items:center; gap:5px; font-size:0.8rem;">
+                        <i data-lucide="chevron-left" style="width:16px;"></i> Volver
+                    </button>
+                    <h2>Directorio de Oradores</h2>
+                </div>
+            </header>
+            <div class="scrollable" style="padding: 0 20px;">
+                <div class="glass-card" style="margin-bottom: 20px;">
+                    <h4 style="margin-bottom: 15px;">Registrar Orador</h4>
+                    <div class="input-group">
+                        <label>Tipo de Orador</label>
+                        <select id="ora-tipo">
+                            <option value="visitantes">Visitante (Viene a nuestra cong)</option>
+                            <option value="salientes">Saliente (Va a otra cong)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Nombre y Apellido</label>
+                        <input type="text" id="ora-nombre" placeholder="Nombre del orador">
+                    </div>
+                    <div class="input-group">
+                        <label>Nro. de Congregación</label>
+                        <input type="number" id="ora-cong-nro" placeholder="Nro de su cong.">
+                    </div>
+                    <button class="btn-primary" style="width: 100%;" id="btn-save-ora">Guardar Orador</button>
+                </div>
+                
+                <div id="list-oradores" style="display: flex; flex-direction: column; gap: 10px;">
+                    <!-- Filter Chips -->
+                    <div style="display: flex; gap: 8px; margin-bottom: 5px;">
+                        <button onclick="app.renderOradores('visitantes')" class="btn-primary" style="padding: 6px 12px; font-size: 0.7rem; background: var(--surface-light); box-shadow: none;">Visitantes</button>
+                        <button onclick="app.renderOradores('salientes')" class="btn-primary" style="padding: 6px 12px; font-size: 0.7rem; background: var(--surface-light); box-shadow: none;">Salientes</button>
+                    </div>
+                    <div id="items-oradores"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Arreglos Screen -->
+        <div id="screen-arreglos" class="screen">
+            <header>
+                <div class="title-area">
+                    <h2>Arreglos Mensuales</h2>
+                </div>
+            </header>
+            <div class="scrollable" style="padding: 0 20px;">
+                <div class="glass-card" style="margin-bottom: 20px; border-left: 4px solid var(--accent);">
+                    <h4 style="margin-bottom: 15px;">Crear Nuevo Arreglo</h4>
+                    <div class="input-group">
+                        <label>Fecha</label>
+                        <input type="date" id="arr-fecha">
+                    </div>
+                    <div class="input-group">
+                        <label>Tipo de Arreglo</label>
+                        <select id="arr-tipo">
+                            <option value="Visitante">Visitante</option>
+                            <option value="Saliente">Saliente</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label id="lbl-arr-cong">Congregación</label>
+                        <input type="text" id="arr-cong" placeholder="Seleccionar congregación..." list="data-cong-arr">
+                        <datalist id="data-cong-arr"></datalist>
+                    </div>
+                    <div class="input-group">
+                        <label>Nombre del Orador</label>
+                        <input type="text" id="arr-nombre" placeholder="Buscar orador..." list="data-oradores">
+                        <datalist id="data-oradores"></datalist>
+                    </div>
+                    <div class="input-group">
+                        <label>Bosquejo</label>
+                        <input type="text" id="arr-bosquejo" placeholder="Buscar tema..." list="data-bosquejos">
+                        <datalist id="data-bosquejos"></datalist>
+                    </div>
+                    <button class="btn-primary" style="width: 100%; background: linear-gradient(135deg, var(--accent) 0%, #d97706 100%);" id="btn-save-arr">Confirmar Arreglo</button>
+                </div>
+
+                <h4 style="margin-bottom: 10px; color: var(--text-muted);">Consultar por Mes</h4>
+                <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                    <input type="month" id="filter-month" style="flex: 1; background: var(--surface-dark); border: 1px solid var(--glass-border); color: white; border-radius: 8px; padding: 0 10px;">
+                    <button class="btn-primary" style="padding: 10px; background: var(--surface-light); box-shadow: none;" id="btn-export-pdf">
+                        <i data-lucide="file-text"></i> PDF
+                    </button>
+                </div>
+                <div id="list-arreglos-results" style="display: flex; flex-direction: column; gap: 10px;">
+                    <!-- Results dynamically -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Cloud Sync Screen -->
+        <div id="screen-cloud" class="screen">
+            <header>
+                <div class="title-area">
+                    <h2>Sincronización</h2>
+                </div>
+            </header>
+            <div class="scrollable" style="padding: 20px;">
+                <div class="glass-card" style="margin-bottom: 20px; text-align: center;">
+                    <div style="width: 60px; height: 60px; background: var(--secondary-glow); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; color: var(--secondary);">
+                        <i data-lucide="cloud-lightning" style="width: 30px; height: 30px;"></i>
+                    </div>
+                    <h4>Estado: <span style="color: var(--text-muted);">Sin Vincula</span></h4>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">Conecta tu cuenta para sincronizar escritorio y celular.</p>
+                </div>
+
+                <div class="glass-card" style="margin-bottom: 20px;">
+                    <h4 style="margin-bottom: 15px;">Configuración Nube</h4>
+                    <div class="input-group">
+                        <label>Servidor / Endpoint</label>
+                        <input type="text" id="cloud-url" placeholder="https://tu-api.supabase.co">
+                    </div>
+                    <div class="input-group">
+                        <label>API Key / Token</label>
+                        <input type="password" id="cloud-key" placeholder="••••••••••••••••">
+                    </div>
+                    <button class="btn-primary" style="width: 100%;" id="btn-sync-now">Conectar y Sincronizar</button>
+                </div>
+
+                <div class="glass-card">
+                    <h4 style="margin-bottom: 15px;">Exportación Manual</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <button class="btn-primary" style="background: var(--surface-light); box-shadow: none; border: 1px solid var(--glass-border); font-size: 0.75rem;" onclick="app.exportData()">
+                            <i data-lucide="download" style="width:16px;"></i> Backup JSON
+                        </button>
+                        <button class="btn-primary" style="background: var(--surface-light); box-shadow: none; border: 1px solid var(--glass-border); font-size: 0.75rem;" onclick="app.importData()">
+                            <i data-lucide="upload" style="width:16px;"></i> Restaurar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Screen -->
+        <div id="screen-settings" class="screen">
+            <header>
+                <div class="title-area">
+                    <h2>Ajustes</h2>
+                </div>
+            </header>
+            <div class="scrollable" style="padding: 20px;">
+                <div class="glass-card">
+                    <h4 style="margin-bottom: 15px;">Preferencias</h4>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <span>Modo Oscuro</span>
+                        <div style="width: 40px; height: 20px; background: var(--primary); border-radius: 10px; position: relative;">
+                            <div style="width: 16px; height: 16px; background: white; border-radius: 50%; position: absolute; right: 2px; top: 2px;"></div>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <span>PIN de Seguridad</span>
+                        <span style="color: var(--primary); font-weight: 700;">Activo</span>
+                    </div>
+                </div>
+                <button class="btn-primary" style="width: 100%; margin-top: 20px; background: #ef4444; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);" onclick="location.reload()">Cerrar Sesión</button>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <div class="nav-item" onclick="app.navigate('dashboard')" id="nav-dashboard">
+                <i data-lucide="layout-dashboard"></i>
+                <span>Inicio</span>
+            </div>
+            <div class="nav-item" onclick="app.navigate('oradores')" id="nav-oradores">
+                <i data-lucide="users"></i>
+                <span>Oradores</span>
+            </div>
+            <div class="nav-item" onclick="app.navigate('arreglos')" id="nav-arreglos">
+                <i data-lucide="calendar-range"></i>
+                <span>Arreglos</span>
+            </div>
+            <div class="nav-item" onclick="app.navigate('cloud')" id="nav-cloud">
+                <i data-lucide="cloud"></i>
+                <span>Nube</span>
+            </div>
+            <div class="nav-item" onclick="app.navigate('settings')" id="nav-settings">
+                <i data-lucide="settings-2"></i>
+                <span>Ajustes</span>
+            </div>
+        </nav>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        // Init Lucide icons
+        lucide.createIcons();
+    </script>
+</body>
+</html>
