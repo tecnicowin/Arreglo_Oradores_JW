@@ -78,8 +78,12 @@ const app = {
         if (congList) {
             congList.innerHTML = '';
             Object.entries(this.db.congregaciones)
-                .filter(([id, name]) => name.toLowerCase().includes(congQuery) || id.includes(congQuery))
-                .forEach(([id, name]) => {
+                .filter(([id, data]) => {
+                    const name = typeof data === 'string' ? data : data.nombre;
+                    return name.toLowerCase().includes(congQuery) || id.includes(congQuery);
+                })
+                .forEach(([id, data]) => {
+                    const name = typeof data === 'string' ? data : data.nombre;
                     congList.innerHTML += `
                         <div class="glass-card" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px;">
                             <div>
@@ -229,7 +233,8 @@ const app = {
         
         if (congArrDatalist) {
             congArrDatalist.innerHTML = '';
-            Object.entries(this.db.congregaciones).forEach(([id, name]) => {
+            Object.entries(this.db.congregaciones).forEach(([id, data]) => {
+                const name = typeof data === 'string' ? data : data.nombre;
                 congArrDatalist.innerHTML += `<option value="${id} - ${name}">`;
             });
         }
@@ -285,14 +290,21 @@ const app = {
             btnSaveCong.addEventListener('click', () => {
                 const id = document.getElementById('cong-nro').value;
                 const nom = document.getElementById('cong-nombre').value;
-                if (!id || !nom) return alert("Completa los campos");
+                if (!id || !nom) return alert("Nro y Nombre son obligatorios");
 
-                this.db.congregaciones[id] = nom;
+                this.db.congregaciones[id] = {
+                    nombre: nom,
+                    direccion: document.getElementById('cong-direccion').value,
+                    dia: document.getElementById('cong-dia').value,
+                    hora: document.getElementById('cong-hora').value,
+                    responsable: document.getElementById('cong-responsable').value,
+                    contacto: document.getElementById('cong-contacto').value
+                };
                 this.save();
                 this.renderLists();
                 
-                document.getElementById('cong-nro').value = '';
-                document.getElementById('cong-nombre').value = '';
+                ['cong-nro', 'cong-nombre', 'cong-direccion', 'cong-dia', 'cong-hora', 'cong-responsable', 'cong-contacto']
+                    .forEach(fid => document.getElementById(fid).value = '');
             });
         }
 
@@ -589,16 +601,7 @@ const app = {
             styles: { fontSize: 9 }
         });
 
-        currentY = doc.lastAutoTable.finalY + 10;
-        
-        // Host Details Footer (requested)
-        doc.setFontSize(8);
-        doc.setTextColor(100);
-        doc.text(`Dirección: ${this.db.config.direccion || '---'}`, 14, currentY);
-        doc.text(`Días de Reunión: ${this.db.config.dias || '---'} | Horario: ${this.db.config.horario || '---'}`, 14, currentY + 4);
-        doc.text(`Responsable: ${this.db.config.responsable || '---'} | Contacto: ${this.db.config.celular || '---'} | Email: ${this.db.config.email || '---'}`, 14, currentY + 8);
-
-        currentY = currentY + 15;
+        currentY = doc.lastAutoTable.finalY + 15;
 
         // SECCIÓN VISITANTES
         doc.setFontSize(12);
@@ -613,6 +616,15 @@ const app = {
             headStyles: { fillColor: [79, 70, 229] },
             styles: { fontSize: 9 }
         });
+
+        currentY = doc.lastAutoTable.finalY + 10;
+        
+        // Host Details Footer (under Visitantes - requested)
+        doc.setFontSize(8);
+        doc.setTextColor(100);
+        doc.text(`Dirección: ${this.db.config.direccion || '---'}`, 14, currentY);
+        doc.text(`Día de Reunión: ${this.db.config.dias || '---'} | Horario: ${this.db.config.horario || '---'}`, 14, currentY + 4);
+        doc.text(`Responsable: ${this.db.config.responsable || '---'} | Contacto: ${this.db.config.celular || '---'} | Email: ${this.db.config.email || '---'}`, 14, currentY + 8);
 
         if (share && navigator.share) {
             const pdfBlob = doc.output('blob');
