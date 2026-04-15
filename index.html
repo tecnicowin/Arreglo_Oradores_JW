@@ -389,21 +389,27 @@
                     </div>
                     <div class="input-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                         <div class="input-group">
-                            <label>Horario</label>
+                            <label>Días de Reunión</label>
+                            <input type="text" id="cfg-dias" placeholder="Ej: Sáb/Dom">
+                        </div>
+                        <div class="input-group">
+                            <label>Horario (AM/PM)</label>
                             <input type="text" id="cfg-horario" placeholder="Ej: 10:00 AM">
                         </div>
+                    </div>
+                    <div class="input-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                         <div class="input-group">
                             <label>Celular</label>
                             <input type="text" id="cfg-celular" placeholder="+58...">
+                        </div>
+                        <div class="input-group">
+                            <label>Correo Hub</label>
+                            <input type="email" id="cfg-email" placeholder="email@jwpub.org">
                         </div>
                     </div>
                     <div class="input-group">
                         <label>Responsable de Arreglos</label>
                         <input type="text" id="cfg-responsable" placeholder="Nombre del hermano">
-                    </div>
-                    <div class="input-group">
-                        <label>Correo JW Hub</label>
-                        <input type="email" id="cfg-email" placeholder="email@jwpub.org">
                     </div>
                     <button class="btn-primary" style="width: 100%; margin-top: 10px;" id="btn-save-config">Guardar Configuración</button>
                 </div>

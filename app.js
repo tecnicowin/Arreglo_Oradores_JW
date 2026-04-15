@@ -11,7 +11,7 @@ const app = {
         salientes: JSON.parse(localStorage.getItem('salientes')) || {},
         arreglos: JSON.parse(localStorage.getItem('arreglos')) || [],
         config: JSON.parse(localStorage.getItem('config')) || {
-            nombre: '', nro: '', direccion: '', horario: '', celular: '', responsable: '', email: ''
+            nombre: '', nro: '', direccion: '', horario: '', celular: '', responsable: '', email: '', dias: ''
         }
     },
     currentPin: '',
@@ -63,6 +63,7 @@ const app = {
         document.getElementById('cfg-cong-nombre').value = this.db.config.nombre || '';
         document.getElementById('cfg-cong-nro').value = this.db.config.nro || '';
         document.getElementById('cfg-direccion').value = this.db.config.direccion || '';
+        document.getElementById('cfg-dias').value = this.db.config.dias || '';
         document.getElementById('cfg-horario').value = this.db.config.horario || '';
         document.getElementById('cfg-celular').value = this.db.config.celular || '';
         document.getElementById('cfg-responsable').value = this.db.config.responsable || '';
@@ -437,6 +438,7 @@ const app = {
                     nombre: document.getElementById('cfg-cong-nombre').value,
                     nro: document.getElementById('cfg-cong-nro').value,
                     direccion: document.getElementById('cfg-direccion').value,
+                    dias: document.getElementById('cfg-dias').value,
                     horario: document.getElementById('cfg-horario').value,
                     celular: document.getElementById('cfg-celular').value,
                     responsable: document.getElementById('cfg-responsable').value,
@@ -592,8 +594,9 @@ const app = {
         // Host Details Footer (requested)
         doc.setFontSize(8);
         doc.setTextColor(100);
-        doc.text(`Dirección: ${this.db.config.direccion || '---'} | Horario: ${this.db.config.horario || '---'}`, 14, currentY);
-        doc.text(`Responsable: ${this.db.config.responsable || '---'} | Contacto: ${this.db.config.celular || '---'} | Email: ${this.db.config.email || '---'}`, 14, currentY + 4);
+        doc.text(`Dirección: ${this.db.config.direccion || '---'}`, 14, currentY);
+        doc.text(`Días de Reunión: ${this.db.config.dias || '---'} | Horario: ${this.db.config.horario || '---'}`, 14, currentY + 4);
+        doc.text(`Responsable: ${this.db.config.responsable || '---'} | Contacto: ${this.db.config.celular || '---'} | Email: ${this.db.config.email || '---'}`, 14, currentY + 8);
 
         currentY = currentY + 15;
 
