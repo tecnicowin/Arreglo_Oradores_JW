@@ -12,7 +12,8 @@ const app = {
         arreglos: JSON.parse(localStorage.getItem('arreglos')) || [],
         config: JSON.parse(localStorage.getItem('config')) || {
             nombre: '', nro: '', direccion: '', horario: '', celular: '', responsable: '', email: '', dias: '',
-            ghUser: '', ghRepo: 'arregloorajw', ghToken: ''
+            ghUser: '', ghRepo: 'arregloorajw', ghToken: '',
+            darkMode: true
         }
     },
     tempOraBosqs: [], // Temp storage for speaker registration
@@ -29,6 +30,7 @@ const app = {
         this.setupEventListeners();
         this.updateDataLists();
         this.updateArreglosFlow();
+        this.applyTheme();
 
         // Register PWA Service Worker
         if ('serviceWorker' in navigator) {
@@ -754,6 +756,12 @@ const app = {
             }
         });
 
+        // Theme Toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => this.toggleTheme());
+        }
+
         const btnShare = document.createElement('button');
         btnShare.className = 'btn-primary';
         btnShare.style = 'padding: 10px; background: #25d366; box-shadow: none; margin-left: 10px;';
@@ -1259,6 +1267,35 @@ const app = {
         if (dot) dot.style.background = success ? '#22c55e' : '#ef4444';
         if (txt) txt.innerText = text;
         if (last) last.innerText = "Última vez: " + new Date().toLocaleTimeString();
+    },
+
+    // --- Theme Management ---
+    toggleTheme() {
+        this.db.config.darkMode = !this.db.config.darkMode;
+        this.save();
+        this.applyTheme();
+    },
+
+    applyTheme() {
+        const isDark = this.db.config.darkMode;
+        if (isDark) {
+            document.body.classList.add('dark-theme');
+        } else {
+            document.body.classList.remove('dark-theme');
+        }
+
+        // Update Toggle UI
+        const toggle = document.getElementById('theme-toggle');
+        const dot = document.getElementById('theme-toggle-dot');
+        if (toggle && dot) {
+            if (isDark) {
+                toggle.style.background = 'var(--primary)';
+                dot.style.left = '23px';
+            } else {
+                toggle.style.background = '#e2e8f0';
+                dot.style.left = '3px';
+            }
+        }
     }
 };
 

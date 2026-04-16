@@ -19,9 +19,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
     
+    <!-- PWA & Mobile -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#6366f1">
+    
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="dark-theme">
+<body>
     <div id="app">
         <!-- Security PIN Screen -->
         <div id="screen-login" class="screen active">
@@ -513,8 +519,8 @@
                     <h4 style="margin-bottom: 15px;">Preferencias de App</h4>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                         <span>Modo Oscuro</span>
-                        <div style="width: 40px; height: 20px; background: var(--primary); border-radius: 10px; position: relative;">
-                            <div style="width: 16px; height: 16px; background: white; border-radius: 50%; position: absolute; right: 2px; top: 2px;"></div>
+                        <div id="theme-toggle" style="width: 44px; height: 24px; background: #e2e8f0; border-radius: 12px; position: relative; cursor: pointer; transition: all 0.3s;">
+                            <div id="theme-toggle-dot" style="width: 18px; height: 18px; background: white; border-radius: 50%; position: absolute; left: 3px; top: 3px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: all 0.3s;"></div>
                         </div>
                     </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
