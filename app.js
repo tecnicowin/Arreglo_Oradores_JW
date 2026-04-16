@@ -23,28 +23,32 @@ const app = {
 
     // --- Core Methods ---
     init() {
-        console.log("Control de Oradores Pro - Initialized");
-        this.renderLists();
-        this.renderStats();
-        this.renderRecentActivity();
-        this.setupEventListeners();
-        this.updateDataLists();
-        this.updateArreglosFlow();
-        this.applyTheme();
+        try {
+            console.log("Control de Oradores Pro - Initializing...");
+            this.renderLists();
+            this.renderStats();
+            this.renderRecentActivity();
+            this.setupEventListeners();
+            this.updateDataLists();
+            this.updateArreglosFlow();
+            this.applyTheme();
 
-        // Register PWA Service Worker
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js')
-                .then(() => console.log("Service Worker Registered"));
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js').catch(err => console.log("SW Error:", err));
+            }
+            
+            // Catch PWA Install
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                this.deferredPrompt = e;
+                const banner = document.getElementById('install-banner');
+                if (banner) banner.style.display = 'block';
+            });
+        } catch (err) {
+            console.error("Critical Init Error:", err);
+            // Don't freeze, just show login
+            this.navigate('login');
         }
-
-        // PWA Installation Prompt Logic
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            this.deferredPrompt = e;
-            const installBanner = document.getElementById('install-banner');
-            if (installBanner) installBanner.style.display = 'block';
-        });
     },
 
     save() {
@@ -1321,4 +1325,16 @@ const app = {
     }
 };
 
-window.addEventListener('DOMContentLoaded', () => app.init());
+// Global Error Handler to prevent freezing
+window.onerror = function(msg, url, line) {
+    console.error(`Error: ${msg}\nLine: ${line}\nURL: ${url}`);
+    return false; 
+};
+
+window.addEventListener('DOMContentLoaded', () => {
+    try {
+        app.init();
+    } catch(e) {
+        console.error("App Launch Failed:", e);
+    }
+});
