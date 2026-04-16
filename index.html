@@ -594,18 +594,22 @@
 
                 <div class="glass-card">
                     <h4 style="margin-bottom: 15px;">Preferencias de App</h4>
-                    <div
-                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                         <span>Modo Oscuro</span>
-                        <div id="theme-toggle"
-                            style="width: 44px; height: 24px; background: #e2e8f0; border-radius: 12px; position: relative; cursor: pointer; transition: all 0.3s;">
-                            <div id="theme-toggle-dot"
-                                style="width: 18px; height: 18px; background: white; border-radius: 50%; position: absolute; left: 3px; top: 3px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: all 0.3s;">
-                            </div>
+                        <div id="theme-toggle" style="width: 44px; height: 24px; background: #e2e8f0; border-radius: 12px; position: relative; cursor: pointer; transition: all 0.3s;">
+                            <div id="theme-toggle-dot" style="width: 18px; height: 18px; background: white; border-radius: 50%; position: absolute; left: 3px; top: 3px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: all 0.3s;"></div>
                         </div>
                     </div>
-                    <div
-                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-top: 1px solid var(--glass-border); padding-top: 15px;">
+                        <div style="display:flex; flex-direction:column;">
+                            <span style="font-size: 0.9rem;">Cambiar PIN Local</span>
+                            <span style="font-size: 0.65rem; color: var(--text-muted);">Solo para este dispositivo</span>
+                        </div>
+                        <input type="password" id="cfg-local-pin" maxlength="4" placeholder="1234" style="width: 60px; text-align: center; background: var(--surface-dark); border: 1px solid var(--glass-border); color: white; border-radius: 4px; padding: 5px;">
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                         <span>PIN de Seguridad</span>
                         <span style="color: var(--primary); font-weight: 700;">Activo</span>
                     </div>

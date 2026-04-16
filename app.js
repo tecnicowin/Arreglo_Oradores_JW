@@ -18,7 +18,7 @@ const app = {
     },
     tempOraBosqs: [], // Temp storage for speaker registration
     currentPin: '',
-    correctPin: '1234', // Default PIN for demo
+    correctPin: localStorage.getItem('localPin') || '1234',
     currentOradoresType: 'visitantes',
     syncLock: false, // Prevents auto-push during initial pull
 
@@ -51,6 +51,13 @@ const app = {
         localStorage.setItem('salientes', JSON.stringify(this.db.salientes));
         localStorage.setItem('arreglos', JSON.stringify(this.db.arreglos));
         localStorage.setItem('config', JSON.stringify(this.db.config));
+
+        // Save PIN separately (local only)
+        const pinInput = document.getElementById('cfg-local-pin');
+        if (pinInput && pinInput.value.length === 4) {
+            this.correctPin = pinInput.value;
+            localStorage.setItem('localPin', this.correctPin);
+        }
 
         // Auto-push to cloud if configured and NOT locked
         if (!this.syncLock && this.db.config.ghToken && this.db.config.ghUser) {
@@ -104,7 +111,8 @@ const app = {
             'cfg-email': this.db.config.email,
             'sync-user': this.db.config.ghUser,
             'sync-repo': this.db.config.ghRepo || 'arregloorajw',
-            'sync-token': this.db.config.ghToken
+            'sync-token': this.db.config.ghToken,
+            'cfg-local-pin': this.correctPin
         };
 
         Object.entries(fields).forEach(([id, val]) => {
