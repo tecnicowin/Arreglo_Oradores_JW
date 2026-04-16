@@ -716,18 +716,18 @@ const app = {
         const btnSaveConfig = document.getElementById('btn-save-config');
         if (btnSaveConfig) {
             btnSaveConfig.addEventListener('click', () => {
-                this.db.config = {
-                    nombre: document.getElementById('cfg-cong-nombre').value,
-                    nro: document.getElementById('cfg-cong-nro').value,
-                    direccion: document.getElementById('cfg-direccion').value,
-                    dias: document.getElementById('cfg-dias').value,
-                    horario: document.getElementById('cfg-horario').value,
-                    celular: document.getElementById('cfg-celular').value,
-                    responsable: document.getElementById('cfg-responsable').value,
-                    email: document.getElementById('cfg-email').value
-                };
+                // Update only the specific logistical fields, preserving sync tokens
+                this.db.config.nombre = document.getElementById('cfg-cong-nombre').value;
+                this.db.config.nro = document.getElementById('cfg-cong-nro').value;
+                this.db.config.direccion = document.getElementById('cfg-direccion').value;
+                this.db.config.dias = document.getElementById('cfg-dias').value;
+                this.db.config.horario = document.getElementById('cfg-horario').value;
+                this.db.config.celular = document.getElementById('cfg-celular').value;
+                this.db.config.responsable = document.getElementById('cfg-responsable').value;
+                this.db.config.email = document.getElementById('cfg-email').value;
+                
                 this.save();
-                alert("Configuración inicial guardada correctamente.");
+                alert("✅ Configuración guardada. Los datos de sincronización se han mantenido seguros.");
             });
         }
 
