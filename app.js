@@ -1151,13 +1151,16 @@ const app = {
 
         // 1. Get current file (to get SHA if exists)
         const fileData = await this.githubRequest('GET', 'database.json', null, silent);
-        if (!fileData && !silent && this.db.config.ghToken) {
-             // If error and not intentional 404
-        }
         const sha = fileData ? fileData.sha : null;
 
-        // 2. Prepare content
-        const content = btoa(unescape(encodeURIComponent(JSON.stringify(this.db, null, 2))));
+        // 2. Prepare content (CLEANING SENSITIVE DATA FOR SECURITY)
+        const dbCopy = JSON.parse(JSON.stringify(this.db));
+        if (dbCopy.config) {
+            dbCopy.config.ghToken = ''; // NEVER upload your token back to GitHub
+            dbCopy.config.ghUser = '';  // Optional: keep repo clean
+        }
+
+        const content = btoa(unescape(encodeURIComponent(JSON.stringify(dbCopy, null, 2))));
         
         const body = {
             message: `Auto-update database ${new Date().toLocaleString()}`,
