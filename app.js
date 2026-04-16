@@ -1012,7 +1012,7 @@ const app = {
                     }
                 }, 1000);
             } else {
-                alert("PIN Incorrecto");
+                this.showToast("PIN Incorrecto", "error");
                 this.clearPin();
             }
         }
@@ -1215,7 +1215,7 @@ const app = {
         
         if (result) {
             this.updateSyncStatus(true, "Sincronizado (Auto)");
-            if (!silent) alert("✅ Base de datos subida con éxito a GitHub.");
+            this.showToast("Base de Datos sincronizada con GitHub");
         }
         
         if (!silent && btn) {
@@ -1256,11 +1256,10 @@ const app = {
                     this.db.config.ghRepo = localGhRepo;
 
                     this.save();
-                    this.updateSyncStatus(true, "Sincronizado (Bajada)");
+                    this.showToast("Datos descargados de la nube");
                     
                     if (!silent) {
-                        alert("✅ Datos descargados y actualizados. La app se reiniciará.");
-                        location.reload();
+                        setTimeout(() => location.reload(), 1500);
                     } else {
                         // If silent, just refresh UI without reload if possible
                         this.renderLists();
@@ -1319,6 +1318,39 @@ const app = {
                 toggle.style.background = '#e2e8f0';
                 dot.style.left = '3px';
             }
+        }
+    },
+
+    // --- Professional Toasts ---
+    showToast(msg, type = 'success') {
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        
+        let icon = 'check-circle';
+        if (type === 'error') icon = 'alert-circle';
+        if (type === 'info') icon = 'info';
+        
+        toast.innerHTML = `
+            <i data-lucide="${icon}" style="width: 18px; height: 18px;"></i>
+            <span>${msg}</span>
+        `;
+        
+        const container = document.getElementById('toast-container');
+        if (container) {
+            container.appendChild(toast);
+            lucide.createIcons();
+            
+            // Trigger animation
+            setTimeout(() => toast.classList.add('show'), 100);
+            
+            // Remove after 3s
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        } else {
+            // Fallback to alert if container missing
+            console.log("Toast:", msg);
         }
     }
 };

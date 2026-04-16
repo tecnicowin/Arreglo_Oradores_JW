@@ -1,16 +1,20 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Control de Oradores Pro</title>
-    <meta name="description" content="Gestión profesional de intercambio de oradores. Sincronización en la nube, móvil y escritorio.">
-    
+    <meta name="description"
+        content="Gestión profesional de intercambio de oradores. Sincronización en la nube, móvil y escritorio.">
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap"
+        rel="stylesheet">
+
     <!-- Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- XLSX Library -->
@@ -18,31 +22,38 @@
     <!-- PDF Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
-    
+
     <!-- PWA & Mobile -->
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#6366f1">
-    
+
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
+    <div id="toast-container"></div>
     <div id="app">
         <!-- Security PIN Screen -->
         <div id="screen-login" class="screen active">
-            <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px; text-align: center;">
-                <div style="width: 100px; height: 100px; background: var(--primary-glow); border-radius: 24px; display: flex; align-items: center; justify-content: center; margin-bottom: 25px; border: 1px solid var(--primary); overflow: hidden;">
+            <div
+                style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px; text-align: center;">
+                <div
+                    style="width: 100px; height: 100px; background: var(--primary-glow); border-radius: 24px; display: flex; align-items: center; justify-content: center; margin-bottom: 25px; border: 1px solid var(--primary); overflow: hidden;">
                     <img src="icon-512.png" alt="Logo" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
                 <h3 style="font-size: 1.5rem; margin-bottom: 10px;">Acceso Seguro</h3>
-                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 30px;">Ingresa tu PIN para continuar</p>
-                
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 30px;">Ingresa tu PIN para
+                    continuar</p>
+
                 <div id="pin-display" style="display: flex; gap: 15px; margin-bottom: 40px;">
-                    <span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span>
+                    <span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span><span
+                        class="pin-dot"></span>
                 </div>
 
-                <div class="pin-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 100%; max-width: 280px;">
+                <div class="pin-grid"
+                    style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 100%; max-width: 280px;">
                     <button class="pin-btn" onclick="app.pressPin('1')">1</button>
                     <button class="pin-btn" onclick="app.pressPin('2')">2</button>
                     <button class="pin-btn" onclick="app.pressPin('3')">3</button>
@@ -54,10 +65,13 @@
                     <button class="pin-btn" onclick="app.pressPin('9')">9</button>
                     <button class="pin-btn" style="background: transparent; border: none;"></button>
                     <button class="pin-btn" onclick="app.pressPin('0')">0</button>
-                    <button class="pin-btn" onclick="app.clearPin()" style="color: var(--accent);"><i data-lucide="delete" style="width:20px;"></i></button>
+                    <button class="pin-btn" onclick="app.clearPin()" style="color: var(--accent);"><i
+                            data-lucide="delete" style="width:20px;"></i></button>
                 </div>
-                
-                <p style="margin-top: 50px; font-size: 0.6rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px;">Control de Oradores Pro v1.0</p>
+
+                <p
+                    style="margin-top: 50px; font-size: 0.6rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px;">
+                    Control de Oradores Pro v1.0</p>
             </div>
         </div>
 
@@ -65,10 +79,13 @@
         <div id="screen-dashboard" class="screen">
             <header>
                 <div class="title-area">
-                    <span style="font-size: 0.75rem; color: var(--primary); font-weight: 700; text-transform: uppercase;">Hola, Coordinador 👋</span>
+                    <span
+                        style="font-size: 0.75rem; color: var(--primary); font-weight: 700; text-transform: uppercase;">Hola,
+                        Coordinador 👋</span>
                     <h2>Panel de Control</h2>
                 </div>
-                <button class="btn-primary" style="padding: 8px; border-radius: 50%; width: 42px; height: 42px;" onclick="app.navigate('arreglos')">
+                <button class="btn-primary" style="padding: 8px; border-radius: 50%; width: 42px; height: 42px;"
+                    onclick="app.navigate('arreglos')">
                     <i data-lucide="plus"></i>
                 </button>
             </header>
@@ -94,15 +111,20 @@
                     </div>
                 </div>
 
-                <h3 style="margin-top: 10px; font-size: 0.9rem; color: var(--text-muted); text-transform: uppercase;">Actividad Reciente</h3>
-                <div id="recent-activity" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+                <h3 style="margin-top: 10px; font-size: 0.9rem; color: var(--text-muted); text-transform: uppercase;">
+                    Actividad Reciente</h3>
+                <div id="recent-activity"
+                    style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
                     <!-- Inject recent arrangements -->
                 </div>
 
-                <h3 style="margin-top: 10px; font-size: 0.9rem; color: var(--text-muted); text-transform: uppercase;">Accesos Rápidos</h3>
-                
-                <div class="dashboard-actions" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 30px;">
-                    <button class="glass-card nav-item" style="padding: 24px 10px;" onclick="app.navigate('congregaciones')">
+                <h3 style="margin-top: 10px; font-size: 0.9rem; color: var(--text-muted); text-transform: uppercase;">
+                    Accesos Rápidos</h3>
+
+                <div class="dashboard-actions"
+                    style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 30px;">
+                    <button class="glass-card nav-item" style="padding: 24px 10px;"
+                        onclick="app.navigate('congregaciones')">
                         <i data-lucide="building-2" style="color: var(--primary);"></i>
                         <span>Congregaciones</span>
                     </button>
@@ -118,7 +140,8 @@
         <div id="screen-congregaciones" class="screen">
             <header>
                 <div class="title-area">
-                    <button onclick="app.navigate('dashboard')" style="background:none; border:none; color:white; margin-bottom: 5px; display: flex; align-items:center; gap:5px; font-size:0.8rem;">
+                    <button onclick="app.navigate('dashboard')"
+                        style="background:none; border:none; color:white; margin-bottom: 5px; display: flex; align-items:center; gap:5px; font-size:0.8rem;">
                         <i data-lucide="chevron-left" style="width:16px;"></i> Volver
                     </button>
                     <h2>Congregaciones</h2>
@@ -160,24 +183,31 @@
                         </div>
                     </div>
                     <button class="btn-primary" style="width: 100%;" id="btn-save-cong">Guardar Congregación</button>
-                    <button class="btn-primary" style="width: 100%; margin-top: 8px; background: var(--surface-light); color: white; display: none;" id="btn-cancel-cong">Cancelar Edición</button>
+                    <button class="btn-primary"
+                        style="width: 100%; margin-top: 8px; background: var(--surface-light); color: white; display: none;"
+                        id="btn-cancel-cong">Cancelar Edición</button>
                     <input type="hidden" id="cong-edit-id">
                 </div>
-                
+
                 <h4 style="margin-bottom: 10px; color: var(--text-muted);">Listado</h4>
-                
-                <div class="glass-card" style="margin-bottom: 20px; border: 1px dashed var(--primary); background: var(--primary-glow);">
-                    <p style="font-size: 0.75rem; text-align: center; margin-bottom: 10px;">Importar desde Excel (Columnas: Nro, Nombre)</p>
+
+                <div class="glass-card"
+                    style="margin-bottom: 20px; border: 1px dashed var(--primary); background: var(--primary-glow);">
+                    <p style="font-size: 0.75rem; text-align: center; margin-bottom: 10px;">Importar desde Excel
+                        (Columnas: Nro, Nombre)</p>
                     <input type="file" id="excel-cong" accept=".xlsx, .xls" style="display: none;">
-                    <button class="btn-primary" style="width: 100%; height: 35px; font-size: 0.8rem;" onclick="document.getElementById('excel-cong').click()">
+                    <button class="btn-primary" style="width: 100%; height: 35px; font-size: 0.8rem;"
+                        onclick="document.getElementById('excel-cong').click()">
                         <i data-lucide="file-spreadsheet"></i> Cargar Excel
                     </button>
                 </div>
 
                 <div class="input-group" style="margin-bottom: 15px;">
                     <div style="position: relative;">
-                        <input type="text" id="search-cong" placeholder="Buscar congregación..." style="padding-left: 35px; background: var(--surface-light); border: 1px solid var(--glass-border);">
-                        <i data-lucide="search" style="position: absolute; left: 10px; top: 10px; width: 16px; color: var(--text-dim);"></i>
+                        <input type="text" id="search-cong" placeholder="Buscar congregación..."
+                            style="padding-left: 35px; background: var(--surface-light); border: 1px solid var(--glass-border);">
+                        <i data-lucide="search"
+                            style="position: absolute; left: 10px; top: 10px; width: 16px; color: var(--text-dim);"></i>
                     </div>
                 </div>
 
@@ -191,7 +221,8 @@
         <div id="screen-bosquejos" class="screen">
             <header>
                 <div class="title-area">
-                    <button onclick="app.navigate('dashboard')" style="background:none; border:none; color:white; margin-bottom: 5px; display: flex; align-items:center; gap:5px; font-size:0.8rem;">
+                    <button onclick="app.navigate('dashboard')"
+                        style="background:none; border:none; color:white; margin-bottom: 5px; display: flex; align-items:center; gap:5px; font-size:0.8rem;">
                         <i data-lucide="chevron-left" style="width:16px;"></i> Volver
                     </button>
                     <h2>Bosquejos</h2>
@@ -210,21 +241,27 @@
                     </div>
                     <button class="btn-primary" style="width: 100%;" id="btn-save-bosq">Guardar Bosquejo</button>
                 </div>
-                
+
                 <h4 style="margin-bottom: 10px; color: var(--text-muted);">Listado Temas</h4>
 
-                <div class="glass-card" style="margin-bottom: 20px; border: 1px dashed var(--secondary); background: var(--secondary-glow);">
-                    <p style="font-size: 0.75rem; text-align: center; margin-bottom: 10px;">Importar desde Excel (Columnas: Nro, Titulo)</p>
+                <div class="glass-card"
+                    style="margin-bottom: 20px; border: 1px dashed var(--secondary); background: var(--secondary-glow);">
+                    <p style="font-size: 0.75rem; text-align: center; margin-bottom: 10px;">Importar desde Excel
+                        (Columnas: Nro, Titulo)</p>
                     <input type="file" id="excel-bosq" accept=".xlsx, .xls" style="display: none;">
-                    <button class="btn-primary" style="width: 100%; height: 35px; font-size: 0.8rem; background: var(--secondary);" onclick="document.getElementById('excel-bosq').click()">
+                    <button class="btn-primary"
+                        style="width: 100%; height: 35px; font-size: 0.8rem; background: var(--secondary);"
+                        onclick="document.getElementById('excel-bosq').click()">
                         <i data-lucide="file-spreadsheet"></i> Cargar Excel
                     </button>
                 </div>
 
                 <div class="input-group" style="margin-bottom: 15px;">
                     <div style="position: relative;">
-                        <input type="text" id="search-bosq" placeholder="Buscar bosquejo..." style="padding-left: 35px; background: var(--surface-light); border: 1px solid var(--glass-border);">
-                        <i data-lucide="search" style="position: absolute; left: 10px; top: 10px; width: 16px; color: var(--text-dim);"></i>
+                        <input type="text" id="search-bosq" placeholder="Buscar bosquejo..."
+                            style="padding-left: 35px; background: var(--surface-light); border: 1px solid var(--glass-border);">
+                        <i data-lucide="search"
+                            style="position: absolute; left: 10px; top: 10px; width: 16px; color: var(--text-dim);"></i>
                     </div>
                 </div>
 
@@ -238,7 +275,8 @@
         <div id="screen-oradores" class="screen">
             <header>
                 <div class="title-area">
-                    <button onclick="app.navigate('dashboard')" style="background:none; border:none; color:white; margin-bottom: 5px; display: flex; align-items:center; gap:5px; font-size:0.8rem;">
+                    <button onclick="app.navigate('dashboard')"
+                        style="background:none; border:none; color:white; margin-bottom: 5px; display: flex; align-items:center; gap:5px; font-size:0.8rem;">
                         <i data-lucide="chevron-left" style="width:16px;"></i> Volver
                     </button>
                     <h2>Directorio de Oradores</h2>
@@ -265,8 +303,10 @@
                     <div class="input-group">
                         <label>Temas / Bosquejos (Seleccionar o escribir)</label>
                         <div style="display: flex; gap: 8px; margin-bottom: 10px;">
-                            <input type="text" id="ora-bosq-input" placeholder="Escribe nro o busca..." list="data-bosquejos-all" style="flex: 1;">
-                            <button type="button" class="btn-primary" style="padding: 10px; border-radius: 8px;" id="btn-add-ora-bosq">
+                            <input type="text" id="ora-bosq-input" placeholder="Escribe nro o busca..."
+                                list="data-bosquejos-all" style="flex: 1;">
+                            <button type="button" class="btn-primary" style="padding: 10px; border-radius: 8px;"
+                                id="btn-add-ora-bosq">
                                 <i data-lucide="plus"></i>
                             </button>
                         </div>
@@ -276,27 +316,35 @@
                         </div>
                     </div>
                     <button class="btn-primary" style="width: 100%;" id="btn-save-ora">Guardar Orador</button>
-                    <button class="btn-primary" style="width: 100%; margin-top: 8px; background: var(--surface-light); color: white; display: none;" id="btn-cancel-ora">Cancelar Edición</button>
+                    <button class="btn-primary"
+                        style="width: 100%; margin-top: 8px; background: var(--surface-light); color: white; display: none;"
+                        id="btn-cancel-ora">Cancelar Edición</button>
                     <input type="hidden" id="ora-edit-name">
                 </div>
 
-                <div class="glass-card" style="margin-bottom: 20px; border: 1px dashed var(--primary); background: var(--primary-glow);">
-                    <p style="font-size: 0.75rem; text-align: center; margin-bottom: 10px;">Importar Oradores (Columnas: Nombre, Congregacion)</p>
+                <div class="glass-card"
+                    style="margin-bottom: 20px; border: 1px dashed var(--primary); background: var(--primary-glow);">
+                    <p style="font-size: 0.75rem; text-align: center; margin-bottom: 10px;">Importar Oradores (Columnas:
+                        Nombre, Congregacion)</p>
                     <input type="file" id="excel-ora" accept=".xlsx, .xls" style="display: none;">
-                    <button class="btn-primary" style="width: 100%; height: 35px; font-size: 0.8rem;" onclick="document.getElementById('excel-ora').click()">
+                    <button class="btn-primary" style="width: 100%; height: 35px; font-size: 0.8rem;"
+                        onclick="document.getElementById('excel-ora').click()">
                         <i data-lucide="file-spreadsheet"></i> Cargar Excel
                     </button>
                 </div>
-                
+
                 <div id="list-oradores" style="display: flex; flex-direction: column; gap: 10px;">
                     <!-- Search Oradores -->
                     <div class="input-group" style="margin-bottom: 5px;">
-                        <input type="text" id="search-ora" placeholder="Buscar orador..." style="background: var(--surface-light); border: 1px solid var(--glass-border);">
+                        <input type="text" id="search-ora" placeholder="Buscar orador..."
+                            style="background: var(--surface-light); border: 1px solid var(--glass-border);">
                     </div>
                     <!-- Filter Chips -->
                     <div style="display: flex; gap: 8px; margin-bottom: 5px;">
-                        <button onclick="app.setOradoresFilter('visitantes')" id="chip-visitantes" class="btn-primary" style="padding: 6px 12px; font-size: 0.7rem; background: var(--primary); color: white;">Visitantes</button>
-                        <button onclick="app.setOradoresFilter('salientes')" id="chip-salientes" class="btn-primary" style="padding: 6px 12px; font-size: 0.7rem; background: var(--surface-light); box-shadow: none;">Salientes</button>
+                        <button onclick="app.setOradoresFilter('visitantes')" id="chip-visitantes" class="btn-primary"
+                            style="padding: 6px 12px; font-size: 0.7rem; background: var(--primary); color: white;">Visitantes</button>
+                        <button onclick="app.setOradoresFilter('salientes')" id="chip-salientes" class="btn-primary"
+                            style="padding: 6px 12px; font-size: 0.7rem; background: var(--surface-light); box-shadow: none;">Salientes</button>
                     </div>
                     <div id="items-oradores"></div>
                 </div>
@@ -337,21 +385,30 @@
                     <div class="input-group">
                         <label>Bosquejo</label>
                         <div style="display: flex; gap: 8px;">
-                            <input type="text" id="arr-bosquejo" placeholder="Buscar tema..." list="data-bosquejos" style="flex: 1;">
-                            <button type="button" class="btn-primary" style="padding: 10px; background: var(--secondary);" id="btn-quick-add-bosq" title="Vincular este tema al orador">
+                            <input type="text" id="arr-bosquejo" placeholder="Buscar tema..." list="data-bosquejos"
+                                style="flex: 1;">
+                            <button type="button" class="btn-primary"
+                                style="padding: 10px; background: var(--secondary);" id="btn-quick-add-bosq"
+                                title="Vincular este tema al orador">
                                 <i data-lucide="plus"></i>
                             </button>
                         </div>
                         <datalist id="data-bosquejos"></datalist>
-                        <p id="bosq-hint" style="font-size: 0.65rem; color: var(--text-dim); margin-top: 4px; display: none;">Sugerencia: Este orador tiene temas vinculados.</p>
+                        <p id="bosq-hint"
+                            style="font-size: 0.65rem; color: var(--text-dim); margin-top: 4px; display: none;">
+                            Sugerencia: Este orador tiene temas vinculados.</p>
                     </div>
-                    <button class="btn-primary" style="width: 100%; background: linear-gradient(135deg, var(--accent) 0%, #d97706 100%);" id="btn-save-arr">Confirmar Arreglo</button>
+                    <button class="btn-primary"
+                        style="width: 100%; background: linear-gradient(135deg, var(--accent) 0%, #d97706 100%);"
+                        id="btn-save-arr">Confirmar Arreglo</button>
                 </div>
 
                 <h4 style="margin-bottom: 10px; color: var(--text-muted);">Consultar por Mes</h4>
                 <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                    <input type="month" id="filter-month" style="flex: 1; background: var(--surface-dark); border: 1px solid var(--glass-border); color: white; border-radius: 8px; padding: 0 10px;">
-                    <button class="btn-primary" style="padding: 10px; background: var(--surface-light); box-shadow: none;" id="btn-export-pdf">
+                    <input type="month" id="filter-month"
+                        style="flex: 1; background: var(--surface-dark); border: 1px solid var(--glass-border); color: white; border-radius: 8px; padding: 0 10px;">
+                    <button class="btn-primary"
+                        style="padding: 10px; background: var(--surface-light); box-shadow: none;" id="btn-export-pdf">
                         <i data-lucide="file-text"></i> PDF
                     </button>
                 </div>
@@ -371,15 +428,20 @@
             <div class="scrollable" style="padding: 20px;">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
                     <div class="glass-card" style="text-align: center; padding: 15px;">
-                        <div style="width: 40px; height: 40px; background: var(--secondary-glow); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; color: var(--secondary);">
+                        <div
+                            style="width: 40px; height: 40px; background: var(--secondary-glow); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; color: var(--secondary);">
                             <i data-lucide="github" style="width: 20px; height: 20px;"></i>
                         </div>
                         <h5 style="font-size: 0.7rem;">GitHub</h5>
                         <p style="font-size: 0.6rem; color: #10b981;">● Conectado</p>
                     </div>
                     <div class="glass-card" style="text-align: center; padding: 15px;">
-                        <div style="width: 40px; height: 40px; background: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; color: white;">
-                            <svg viewBox="0 0 115 115" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 18px;"><path d="M57.5 15L115 115H0L57.5 15Z" fill="white"/></svg>
+                        <div
+                            style="width: 40px; height: 40px; background: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; color: white;">
+                            <svg viewBox="0 0 115 115" fill="none" xmlns="http://www.w3.org/2000/svg"
+                                style="width: 18px;">
+                                <path d="M57.5 15L115 115H0L57.5 15Z" fill="white" />
+                            </svg>
                         </div>
                         <h5 style="font-size: 0.7rem;">Vercel</h5>
                         <p style="font-size: 0.6rem; color: #10b981;">● Activo</p>
@@ -390,7 +452,7 @@
                     <p style="font-size: 0.75rem; color: var(--text-dim); margin-bottom: 15px;">
                         Usa tu repositorio de GitHub como base de datos central para sincronizar varios dispositivos.
                     </p>
-                    
+
                     <div class="input-group">
                         <label>GitHub Username</label>
                         <input type="text" id="sync-user" placeholder="Tu usuario de GitHub">
@@ -403,7 +465,7 @@
                         <label>Nombre del Repositorio</label>
                         <input type="text" id="sync-repo" value="arregloorajw" placeholder="Ej: arregloorajw">
                     </div>
-                    
+
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
                         <button class="btn-primary" id="btn-cloud-push" style="background: var(--secondary);">
                             <i data-lucide="cloud-upload" style="width: 16px; vertical-align: middle;"></i> Subir
@@ -414,27 +476,38 @@
                     </div>
                 </div>
 
-                <div class="glass-card" style="margin-bottom: 20px; text-align: center; border: 1px dashed var(--primary);">
-                    <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 10px;">Estado de Conexión:</p>
+                <div class="glass-card"
+                    style="margin-bottom: 20px; text-align: center; border: 1px dashed var(--primary);">
+                    <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 10px;">Estado de Conexión:
+                    </p>
                     <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
-                        <div id="sync-status-dot" style="width: 10px; height: 10px; background: #94a3b8; border-radius: 50%;"></div>
+                        <div id="sync-status-dot"
+                            style="width: 10px; height: 10px; background: #94a3b8; border-radius: 50%;"></div>
                         <span id="sync-status-text" style="font-size: 0.8rem; font-weight: 700;">Desconectado</span>
                     </div>
-                    <p id="sync-last-update" style="font-size: 0.65rem; color: var(--text-dim); margin-top: 8px;">Sin sincronizaciones recientes</p>
+                    <p id="sync-last-update" style="font-size: 0.65rem; color: var(--text-dim); margin-top: 8px;">Sin
+                        sincronizaciones recientes</p>
                 </div>
 
-                <div class="glass-card" style="margin-bottom: 20px; text-align: center; border: 1px dashed var(--primary);">
-                    <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 10px;">URL del Despliegue:</p>
-                    <a href="https://arregloorajw.vercel.app" target="_blank" style="color: var(--primary); font-size: 0.8rem; text-decoration: none; font-weight: 700;">arregloorajw.vercel.app</a>
+                <div class="glass-card"
+                    style="margin-bottom: 20px; text-align: center; border: 1px dashed var(--primary);">
+                    <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 10px;">URL del Despliegue:
+                    </p>
+                    <a href="https://arregloorajw.vercel.app" target="_blank"
+                        style="color: var(--primary); font-size: 0.8rem; text-decoration: none; font-weight: 700;">arregloorajw.vercel.app</a>
                 </div>
 
                 <div class="glass-card">
                     <h4 style="margin-bottom: 15px;">Exportación Manual</h4>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                        <button class="btn-primary" style="background: var(--surface-light); box-shadow: none; border: 1px solid var(--glass-border); font-size: 0.75rem;" onclick="app.exportData()">
+                        <button class="btn-primary"
+                            style="background: var(--surface-light); box-shadow: none; border: 1px solid var(--glass-border); font-size: 0.75rem;"
+                            onclick="app.exportData()">
                             <i data-lucide="download" style="width:16px;"></i> Backup JSON
                         </button>
-                        <button class="btn-primary" style="background: var(--surface-light); box-shadow: none; border: 1px solid var(--glass-border); font-size: 0.75rem;" onclick="app.importData()">
+                        <button class="btn-primary"
+                            style="background: var(--surface-light); box-shadow: none; border: 1px solid var(--glass-border); font-size: 0.75rem;"
+                            onclick="app.importData()">
                             <i data-lucide="upload" style="width:16px;"></i> Restaurar
                         </button>
                     </div>
@@ -454,13 +527,16 @@
                     <div class="input-group">
                         <label>Buscar Orador o Congregación</label>
                         <div style="position: relative;">
-                            <input type="text" id="consult-query" placeholder="Escribe nombre o número..." style="padding-left: 35px;">
-                            <i data-lucide="search" style="position: absolute; left: 10px; top: 10px; width: 16px; color: var(--text-dim);"></i>
+                            <input type="text" id="consult-query" placeholder="Escribe nombre o número..."
+                                style="padding-left: 35px;">
+                            <i data-lucide="search"
+                                style="position: absolute; left: 10px; top: 10px; width: 16px; color: var(--text-dim);"></i>
                         </div>
                     </div>
                 </div>
 
-                <div id="consult-results" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 30px;">
+                <div id="consult-results"
+                    style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 30px;">
                     <!-- Results dynamically -->
                 </div>
             </div>
@@ -512,23 +588,31 @@
                         <label>Responsable de Arreglos</label>
                         <input type="text" id="cfg-responsable" placeholder="Nombre del hermano">
                     </div>
-                    <button class="btn-primary" style="width: 100%; margin-top: 10px;" id="btn-save-config">Guardar Configuración</button>
+                    <button class="btn-primary" style="width: 100%; margin-top: 10px;" id="btn-save-config">Guardar
+                        Configuración</button>
                 </div>
 
                 <div class="glass-card">
                     <h4 style="margin-bottom: 15px;">Preferencias de App</h4>
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                         <span>Modo Oscuro</span>
-                        <div id="theme-toggle" style="width: 44px; height: 24px; background: #e2e8f0; border-radius: 12px; position: relative; cursor: pointer; transition: all 0.3s;">
-                            <div id="theme-toggle-dot" style="width: 18px; height: 18px; background: white; border-radius: 50%; position: absolute; left: 3px; top: 3px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: all 0.3s;"></div>
+                        <div id="theme-toggle"
+                            style="width: 44px; height: 24px; background: #e2e8f0; border-radius: 12px; position: relative; cursor: pointer; transition: all 0.3s;">
+                            <div id="theme-toggle-dot"
+                                style="width: 18px; height: 18px; background: white; border-radius: 50%; position: absolute; left: 3px; top: 3px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: all 0.3s;">
+                            </div>
                         </div>
                     </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                         <span>PIN de Seguridad</span>
                         <span style="color: var(--primary); font-weight: 700;">Activo</span>
                     </div>
                 </div>
-                <button class="btn-primary" style="width: 100%; margin-top: 20px; background: #ef4444; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);" onclick="location.reload()">Cerrar Sesión</button>
+                <button class="btn-primary"
+                    style="width: 100%; margin-top: 20px; background: #ef4444; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);"
+                    onclick="location.reload()">Cerrar Sesión</button>
             </div>
         </div>
 
@@ -567,4 +651,5 @@
         lucide.createIcons();
     </script>
 </body>
+
 </html>
