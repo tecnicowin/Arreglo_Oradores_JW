@@ -1,16 +1,17 @@
 {
-    "name": "Control de Oradores Pro",
-    "short_name": "Oradores Pro",
-    "description": "Gestión profesional de intercambio de oradores.",
-    "start_url": "index.html",
-    "display": "standalone",
-    "background_color": "#020617",
-    "theme_color": "#6366f1",
-    "icons": [
-        {
-            "src": "logo.png",
-            "sizes": "512x512",
-            "type": "image/png"
-        }
-    ]
+  "name": "Control de Oradores Pro",
+  "short_name": "Oradores JW",
+  "description": "Gestión profesional de intercambio de oradores PWA",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#6366f1",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3534/3534033.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
 }

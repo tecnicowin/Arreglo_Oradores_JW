@@ -29,6 +29,12 @@ const app = {
         this.setupEventListeners();
         this.updateDataLists();
         this.updateArreglosFlow();
+
+        // Register PWA Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(() => console.log("Service Worker Registered"));
+        }
     },
 
     save() {
@@ -968,6 +974,10 @@ const app = {
 
         if (this.currentPin.length === 4) {
             if (this.currentPin === this.correctPin) {
+                // Auto-sync Pull on Login (Silent)
+                if (this.db.config.ghToken && this.db.config.ghUser) {
+                    this.cloudPull(true); // Enhanced to be silent
+                }
                 setTimeout(() => this.navigate('dashboard'), 200);
             } else {
                 alert("PIN Incorrecto");
@@ -1182,15 +1192,17 @@ const app = {
         }
     },
 
-    async cloudPull() {
-        if (!confirm("Esto reemplazará tus datos locales con los de la nube. ¿Continuar?")) return;
+    async cloudPull(silent = false) {
+        if (!silent && !confirm("Esto reemplazará tus datos locales con los de la nube. ¿Continuar?")) return;
 
         const btn = document.getElementById('btn-cloud-pull');
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<i data-lucide="loader-2" class="spin"></i> Bajando...';
-        lucide.createIcons();
+        const originalText = btn ? btn.innerHTML : '';
+        if (!silent && btn) {
+            btn.innerHTML = '<i data-lucide="loader-2" class="spin"></i> Bajando...';
+            lucide.createIcons();
+        }
 
-        const fileData = await this.githubRequest('GET', 'database.json');
+        const fileData = await this.githubRequest('GET', 'database.json', null, silent);
         
         if (fileData && fileData.content) {
             try {
@@ -1199,22 +1211,44 @@ const app = {
                 
                 // Validate minimally
                 if (newDb.arreglos && newDb.congregaciones) {
+                    // Update local DB merging config but keeping local tokens
+                    const localGhToken = this.db.config.ghToken;
+                    const localGhUser = this.db.config.ghUser;
+                    const localGhRepo = this.db.config.ghRepo;
+
                     this.db = newDb;
+                    
+                    // Restore local tokens after overwrite
+                    this.db.config.ghToken = localGhToken;
+                    this.db.config.ghUser = localGhUser;
+                    this.db.config.ghRepo = localGhRepo;
+
                     this.save();
                     this.updateSyncStatus(true, "Sincronizado (Bajada)");
-                    alert("✅ Datos descargados y actualizados. La app se reiniciará.");
-                    location.reload();
+                    
+                    if (!silent) {
+                        alert("✅ Datos descargados y actualizados. La app se reiniciará.");
+                        location.reload();
+                    } else {
+                        // If silent, just refresh UI without reload if possible
+                        this.renderLists();
+                        this.renderStats();
+                        this.renderRecentActivity();
+                    }
                 } else {
-                    alert("⚠️ El archivo en la nube no parece ser una base de datos válida.");
+                    if (!silent) alert("⚠️ El archivo en la nube no parece ser una base de datos válida.");
                 }
             } catch (e) {
-                alert("Error al procesar los datos: " + e.message);
+                if (!silent) alert("Error al procesar los datos: " + e.message);
             }
         } else {
-            alert("❌ No se encontró el archivo database.json en tu repositorio.");
+            if (!silent) alert("❌ No se encontró el archivo database.json en tu repositorio.");
         }
-        btn.innerHTML = originalText;
-        lucide.createIcons();
+
+        if (!silent && btn) {
+            btn.innerHTML = originalText;
+            lucide.createIcons();
+        }
     },
 
     updateSyncStatus(success, text) {
