@@ -326,23 +326,25 @@ const app = {
     },
 
     renderStats() {
-        const statsEl = document.getElementById('stats-speakers');
-        if (statsEl) {
-            const total = Object.keys(this.db.visitantes).length + Object.keys(this.db.salientes).length;
-            statsEl.innerText = total;
-        }
-
-        // Update Upcoming Arrangement Card (Mock or First valid)
-        const nextArrCard = document.querySelector('.status-card p');
-        if (nextArrCard && this.db.arreglos.length > 0) {
-            const sorted = [...this.db.arreglos].sort((a,b) => new Date(a.fecha) - new Date(b.fecha));
-            const future = sorted.find(a => new Date(a.fecha) >= new Date().setHours(0,0,0,0));
-            if (future) {
-                const d = new Date(future.fecha);
-                const options = { weekday: 'long', day: 'numeric', month: 'long' };
-                nextArrCard.innerText = `${d.toLocaleDateString('es-ES', options)} - ${future.tipo}`;
+        try {
+            const statsEl = document.getElementById('stats-speakers');
+            if (statsEl) {
+                const total = (Object.keys(this.db.visitantes || {}).length) + (Object.keys(this.db.salientes || {}).length);
+                statsEl.innerText = total;
             }
-        }
+
+            // Update Upcoming Arrangement Card
+            const nextArrCard = document.querySelector('.status-card p');
+            if (nextArrCard && this.db.arreglos && this.db.arreglos.length > 0) {
+                const sorted = [...this.db.arreglos].sort((a,b) => new Date(a.fecha) - new Date(b.fecha));
+                const future = sorted.find(a => new Date(a.fecha) >= new Date().setHours(0,0,0,0));
+                if (future) {
+                    const d = new Date(future.fecha);
+                    const options = { weekday: 'long', day: 'numeric', month: 'long' };
+                    nextArrCard.innerText = `${d.toLocaleDateString('es-ES', options)} - ${future.tipo}`;
+                }
+            }
+        } catch(e) { console.error("Stats Render Error:", e); }
     },
 
     updateDataLists() {
@@ -1001,11 +1003,15 @@ const app = {
 
         if (this.currentPin.length === 4) {
             if (this.currentPin === this.correctPin) {
-                // Auto-sync Pull on Login (Silent)
-                if (this.db.config.ghToken && this.db.config.ghUser) {
-                    this.cloudPull(true); // Enhanced to be silent
-                }
-                setTimeout(() => this.navigate('dashboard'), 200);
+                // Navigate first to show UI
+                this.navigate('dashboard');
+                
+                // Auto-sync Pull AFTER a delay to prevent freezing
+                setTimeout(() => {
+                    if (this.db.config.ghToken && this.db.config.ghUser) {
+                        this.cloudPull(true);
+                    }
+                }, 1000);
             } else {
                 alert("PIN Incorrecto");
                 this.clearPin();
