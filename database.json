@@ -220,7 +220,17 @@
     "12326": "¿Quién Salvara el Planeta?"
   },
   "visitantes": {},
-  "salientes": {},
+  "salientes": {
+    "Antonio Cáceres ": {
+      "nro_cong": "3780",
+      "bosquejos": [
+        "22",
+        "179",
+        "41",
+        "77"
+      ]
+    }
+  },
   "arreglos": [],
   "config": {
     "nombre": "",
@@ -235,5 +245,6 @@
     "ghRepo": "arregloorajw",
     "ghToken": "",
     "darkMode": true
-  }
+  },
+  "editingOra": null
 }
