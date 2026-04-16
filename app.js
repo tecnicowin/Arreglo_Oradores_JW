@@ -1140,9 +1140,6 @@ const app = {
         }
     },
 
-        }
-    },
-
     installApp() {
         if (!this.deferredPrompt) return;
         this.deferredPrompt.prompt();
