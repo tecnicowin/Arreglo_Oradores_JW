@@ -98,22 +98,26 @@ const app = {
 
     loadConfigToUI() {
         if (!this.db.config) return;
-        document.getElementById('cfg-cong-nombre').value = this.db.config.nombre || '';
-        document.getElementById('cfg-cong-nro').value = this.db.config.nro || '';
-        document.getElementById('cfg-direccion').value = this.db.config.direccion || '';
-        document.getElementById('cfg-dias').value = this.db.config.dias || '';
-        document.getElementById('cfg-horario').value = this.db.config.horario || '';
-        document.getElementById('cfg-celular').value = this.db.config.celular || '';
-        document.getElementById('cfg-responsable').value = this.db.config.responsable || '';
-        document.getElementById('cfg-email').value = this.db.config.email || '';
+        
+        // Safety checks for each element before setting value
+        const fields = {
+            'cfg-cong-nombre': this.db.config.nombre,
+            'cfg-cong-nro': this.db.config.nro,
+            'cfg-direccion': this.db.config.direccion,
+            'cfg-dias': this.db.config.dias,
+            'cfg-horario': this.db.config.horario,
+            'cfg-celular': this.db.config.celular,
+            'cfg-responsable': this.db.config.responsable,
+            'cfg-email': this.db.config.email,
+            'sync-user': this.db.config.ghUser,
+            'sync-repo': this.db.config.ghRepo || 'arregloorajw',
+            'sync-token': this.db.config.ghToken
+        };
 
-        // Also Cloud fields
-        const ghUser = document.getElementById('sync-user');
-        const ghRepo = document.getElementById('sync-repo');
-        const ghToken = document.getElementById('sync-token');
-        if (ghUser) ghUser.value = this.db.config.ghUser || '';
-        if (ghRepo) ghRepo.value = this.db.config.ghRepo || 'arregloorajw';
-        if (ghToken) ghToken.value = this.db.config.ghToken || '';
+        Object.entries(fields).forEach(([id, val]) => {
+            const el = document.getElementById(id);
+            if (el) el.value = val || '';
+        });
     },
 
     // --- UI Rendering ---
