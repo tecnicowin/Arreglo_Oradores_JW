@@ -238,18 +238,19 @@
   },
   "arreglos": [],
   "config": {
-    "nombre": "",
-    "nro": "",
-    "direccion": "",
-    "horario": "",
-    "celular": "",
-    "responsable": "",
+    "nombre": "San Bernardino",
+    "nro": "3780",
+    "direccion": "Dirección Av. Urdaneta, Esq. Platanal a Desamparados, Edf. Plades, Mezzanina, #3, Caracas DC",
+    "horario": "04:00 pm",
+    "celular": "+58 424 2948338",
+    "responsable": "Antonio Caceres",
     "email": "",
-    "dias": "",
+    "dias": "Sabado",
     "ghUser": "",
     "ghRepo": "arregloorajw",
     "ghToken": "",
     "darkMode": true
   },
-  "editingOra": null
+  "editingOra": null,
+  "editingCong": "3780"
 }
