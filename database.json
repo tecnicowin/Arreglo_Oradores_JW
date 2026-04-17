@@ -227,7 +227,12 @@
     "Christian Isturiz": "San Bernardino",
     "Orlando Freites": "VISITA DEL SUPERINTENDENTE"
   },
-  "salientes": {},
+  "salientes": {
+    "William Tellez": {
+      "nro_cong": "3782",
+      "bosquejos": []
+    }
+  },
   "arreglos": [],
   "config": {
     "nombre": "",
@@ -242,5 +247,6 @@
     "ghRepo": "arregloorajw",
     "ghToken": "",
     "darkMode": true
-  }
+  },
+  "editingOra": null
 }
