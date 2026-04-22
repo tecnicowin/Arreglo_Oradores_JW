@@ -220,7 +220,13 @@
     "12326": "¿Quién Salvara el Planeta?"
   },
   "visitantes": {
-    "Orlando Freites": "VISITA DEL SUPERINTENDENTE"
+    "Orlando Freites": "VISITA DEL SUPERINTENDENTE",
+    "Yorman Ruda ": {
+      "nro_cong": "5173",
+      "bosquejos": [
+        "2"
+      ]
+    }
   },
   "salientes": {
     "William Tellez": {
