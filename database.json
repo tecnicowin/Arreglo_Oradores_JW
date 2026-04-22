@@ -287,7 +287,16 @@
       ]
     }
   },
-  "arreglos": [],
+  "arreglos": [
+    {
+      "fecha": "2026-05-02",
+      "tipo": "Saliente",
+      "nombre": "William Tellez",
+      "bosquejo": "23 - La vida tiene propósito",
+      "congregacion": "3780",
+      "id": 1776899574848
+    }
+  ],
   "config": {
     "nombre": "San Bernardino",
     "nro": "3780",
